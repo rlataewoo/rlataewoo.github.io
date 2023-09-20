@@ -38,16 +38,9 @@
     <br>
     <div>
     <h4 style="margin-bottom: 1px;">Abstract</h4>
-      <textarea style="width:55%;min-height:340px;max-height:550px;font-size:17px;color:#000000;resize:none;line-height: 1.45;border:none" readonly> 
+      <textarea style="width:55%;min-height:200px;max-height:550px;font-size:17px;color:#000000;resize:none;line-height: 1.45;border:none" readonly> 
 This paper proposes a masked duration model for controlling utterance length in text-to-speech systems. The capability to control utterance length is essential for synchronization techniques for audiovisual content, such as speech dubbing. Our model leverages both audio and text as prompts, using a masking strategy to predict phoneme-level durations within a specified mask length. This approach allows for the prediction of phoneme durations after specifying the desired utterance length. Additionally, we employ adversarial training for the duration model to enhance robustness of alignment. In experiments, the proposed model shows better performance than the baseline while being able to adjust the utterance length. In ablation, we validate the effectiveness of the proposed adversarial training method.
       </textarea>
-    <div id="toc_container" >
-    <h4>Contents</h4>
-    <ol type="1">
-        <li><a href="#mos">Audio Samples</a></li>
-        <!-- <li><a href="#ablation">Audio Samples using WORLD vocoder (48k)</a></li> -->
-    </ol>
-    </div>
 </div>
 
 
@@ -66,7 +59,7 @@ $("#index").load("index.html");  // 추가 인클루드를 원할 경우 이런�
 <body class="text-center">
     <!-- <div id="index"></div> -->
     <div id="pwg" class="container">
-      <a><h3 style="color:black;" font-weight="bold"><br>1. Audio Samples </br></h3></a>
+      <a><h3 style="color:black;" font-weight="bold"><br>Audio Samples </br></h3></a>
       <hr color="gray" size="1px"></hr> 
       <table>
         <tr>
@@ -81,19 +74,19 @@ $("#index").load("index.html");  // 추가 인클루드를 원할 경우 이런�
         </tr>
         <tr>
           <td style="text-align: right;">Normal&ensp;</td>
-          <td style="text-align: center;"><audio controls><source src="samples/mos/p229_286_FS.wav"></audio></td>
-          <td style="text-align: center;"><audio controls><source src="samples/mos/p229_286_Proposed.wav"></audio></td>
-          <td style="text-align: center;"><audio controls><source src="samples/mos/p229_286_GT.wav"></audio></td>
+          <td style="text-align: center;"><audio controls><source src="samples/mos/p229_386_FS.wav"></audio></td>
+          <td style="text-align: center;"><audio controls><source src="samples/mos/p229_386_Proposed.wav"></audio></td>
+          <td style="text-align: center;"><audio controls><source src="samples/mos/p229_386_GT.wav"></audio></td>
         </tr>
         <tr>
             <td style="text-align: right;">Fast&ensp;</td>
-            <td style="text-align: center;"><audio controls><source src="samples/mos/p229_286_FS_fast.wav"></audio></td>
-            <td style="text-align: center;"><audio controls><source src="samples/mos/p229_286_Proposed_fast.wav"></audio></td>
+            <td style="text-align: center;"><audio controls><source src="samples/mos/p229_386_FS_fast.wav"></audio></td>
+            <td style="text-align: center;"><audio controls><source src="samples/mos/p229_386_Proposed_fast.wav"></audio></td>
         </tr>
         <tr>
             <td style="text-align: right;">Slow&ensp;</td>
-            <td style="text-align: center;"><audio controls><source src="samples/mos/p229_286_FS_slow.wav"></audio></td>
-            <td style="text-align: center;"><audio controls><source src="samples/mos/p229_286_Proposed_slow.wav"></audio></td>
+            <td style="text-align: center;"><audio controls><source src="samples/mos/p229_386_FS_slow.wav"></audio></td>
+            <td style="text-align: center;"><audio controls><source src="samples/mos/p229_386_Proposed_slow.wav"></audio></td>
         </tr>
       </table>
       &nbsp; 
