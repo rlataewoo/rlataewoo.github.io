@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Masked Duration Model for Utterance Duration-Controllable Text-to-Speech</title>
+  </head>
+  <body>
+
+    <div class="container">
+      <div style="text-align: center;">
+      <br>
+      <h1>Masked Duration Model for Utterance Duration-Controllable Text-to-Speech</h1>
+      <h5 style="font-weight: normal;">Taewoo Kim, Choongsang Cho, Young Han Lee</h5>
+      <h6 style="font-weight: normal;">Korea Electronics Technology Institute (KETI)</h6>
+      <h6 style="font-weight: normal;">Seongnam, Sounth Korea</h6>
+      </div>
+
+      </br>
+      </br>
+
+      <h3>Abstract</h3>
+      <p>
+      Recent advances in neural text-to-speech (TTS) systems have achieved high-quality speech synthesis, but maintaining naturalness while controlling utterance duration remains a challenging task. This challenge is further complicated by the need to balance naturalness with the ability to control utterance duration, which is essential for creating realistic speech outputs. Existing approaches to controlling utterance duration often rely on post-processing techniques, which can compromise naturalness. Moreover, these techniques may not be effective in all scenarios, particularly when dealing with variable utterance durations. In this paper, we propose a novel masked duration model, enabling controllable utterance duration in TTS synthesis. Our approach utilizes an audio prompt, a text prompt, and a mask to predict phoneme durations within the masked span, which corresponds to the utterance duration. This allows us to precisely control the utterance duration by determining the target duration initially and then predicting the phoneme duration. Furthermore, our model enables fine-grained control over utterance duration, allowing for more nuanced and realistic speech outputs. Additionally, we employ adversarial training to enhance the robustness of alignment between the audio and text prompts. Experimental results demonstrate that our proposed model outperforms the baseline in terms of utterance duration control. Ablation studies validate the effectiveness of the adversarial training in improving model performance. This technology has significant implications for applications requiring precise control over utterance duration, such as automatic voice dubbing.
+      </p>
+      <p>This page is for <b>research demonstration purposes</b> only.</p>
+
+      <!-- <p><a href="article.html">arxiv (published June 15th, 2020)</a></p> -->
+      </br>
+
+      <h3>Model Overview</h3>
+      <div style="display: flex;">
+        <figure style="margin-right: 10px; text-align: center;">
+          <img src="./img/fig1.jpg" height="600" width="500">
+          <figcaption>Architecture of Mask Duration Model</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+          <img src="./img/fig3.jpg" height="600" width="600">
+          <figcaption>Inference procedure of Mask Duration Model</figcaption>
+        </figure>
+        </div>
+
+      </br>
+      </br>
+      </br>
+
+      <h3>Audio Samples</h3>
+      <p style="margin-bottom: 5px;"><span style="margin-left: 10px;">&nbsp;</span> <b>Baseline</b>: Duration Predictor + A3T</p>
+      <p style="margin-bottom: 5px;"><span style="margin-left: 10px;">&nbsp;</span> <b>Proposed</b>: Masked Duration Model + A3T</p>
+      <p style="margin-bottom: 5px;"><span style="margin-left: 10px;">&nbsp;</span> <b>Ground Truth</b>: Downsampled Recording</p>
+      </br>
+
+
+      <table>
+        <h5><em>Three years ago he would have been.</em></h5>
+        <tr>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;">Baseline</td>
+            <td style="text-align: center;">Proposed</td>
+            <td style="text-align: center;">Ground Truth</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">Normal&ensp;</td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p229_386_FS.wav"></audio></td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p229_386_Proposed.wav"></audio></td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p229_386_GT.wav"></audio></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Fast&ensp;</td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p229_386_FS_fast.wav"></audio></td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p229_386_Proposed_fast.wav"></audio></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Slow&ensp;</td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p229_386_FS_slow.wav"></audio></td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p229_386_Proposed_slow.wav"></audio></td>
+        </tr>
+      </table>
+      &nbsp; 
+
+
+      <table>
+        <h5><em>That will come after the game on Saturday.</em></h5>
+        <tr>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;">Baseline</td>
+            <td style="text-align: center;">Proposed</td>
+            <td style="text-align: center;">Ground Truth</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">Normal&ensp;</td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_384_FS.wav"></audio></td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_384_Proposed.wav"></audio></td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_384_GT.wav"></audio></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Fast&ensp;</td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_384_FS_fast.wav"></audio></td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_384_Proposed_fast.wav"></audio></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Slow&ensp;</td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_384_FS_slow.wav"></audio></td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_384_Proposed_slow.wav"></audio></td>
+        </tr>
+      </table>
+      &nbsp; 
+      
+
+      <table>
+        <h5><em>The compromise is entirely on the arrival at that position.</em></h5>
+        <tr>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;">Baseline</td>
+            <td style="text-align: center;">Proposed</td>
+            <td style="text-align: center;">Ground Truth</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">Normal&ensp;</td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_385_FS.wav"></audio></td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_385_Proposed.wav"></audio></td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_385_GT.wav"></audio></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Fast&ensp;</td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_385_FS_fast.wav"></audio></td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_385_Proposed_fast.wav"></audio></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Slow&ensp;</td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_385_FS_slow.wav"></audio></td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p233_385_Proposed_slow.wav"></audio></td>
+        </tr>
+      </table>
+      &nbsp; 
+
+
+      <table>
+        <h5><em>The move is considered a major breakthrough.</em></h5>
+        <tr>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;">Baseline</td>
+            <td style="text-align: center;">Proposed</td>
+            <td style="text-align: center;">Ground Truth</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">Normal&ensp;</td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p283_465_FS.wav"></audio></td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p283_465_Proposed.wav"></audio></td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p283_465_GT.wav"></audio></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Fast&ensp;</td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p283_465_FS_fast.wav"></audio></td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p283_465_Proposed_fast.wav"></audio></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Slow&ensp;</td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p283_465_FS_slow.wav"></audio></td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p283_465_Proposed_slow.wav"></audio></td>
+        </tr>
+      </table>
+      &nbsp; 
+
+
+      <table>
+        <h5><em>Would he ever go back to the beginning?</em></h5>
+        <tr>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;">Baseline</td>
+            <td style="text-align: center;">Proposed</td>
+            <td style="text-align: center;">Ground Truth</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">Normal&ensp;</td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p336_419_FS.wav"></audio></td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p336_419_Proposed.wav"></audio></td>
+          <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p336_419_GT.wav"></audio></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Fast&ensp;</td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p336_419_FS_fast.wav"></audio></td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p336_419_Proposed_fast.wav"></audio></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Slow&ensp;</td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p336_419_FS_slow.wav"></audio></td>
+            <td style="text-align: center;"><audio controls="" style="width: 350px;"><source src="samples/mos/p336_419_Proposed_slow.wav"></audio></td>
+        </tr>
+      </table>
+      &nbsp; 
+
+      </br>
+
+    </div>
+
+  </body>
+</html>
