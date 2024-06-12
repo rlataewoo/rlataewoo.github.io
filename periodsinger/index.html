@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Period Singer: Integrating Periodic and Aperiodic Variational Autoencoders for Natural-Sounding End-to-End Singing Voice Synthesis</title>
+    <style>
+      table {
+            margin-bottom: 30px; /* 테이블 사이 간격을 20px로 설정 */
+            width: 100%;
+            border-collapse: collapse;
+      }
+      td {
+          text-align: center;
+          border: 1px solid gray; /* 셀 외곽선 */
+          padding: 1px;
+          color: #555555;
+          font-size: 14px;
+      }
+      audio {
+          width: 183px;
+          height: 30px;
+          display: block;
+          margin: 0 auto;
+          background-color: #F0F0F0;
+          /* background-color: white; */
+      }
+      </style>
+  </head>
+  <body>
+
+    <div class="container">
+      <div style="text-align: center;">
+      <br>
+      <h2>Period Singer: Integrating Periodic and Aperiodic Variational Autoencoders for Natural-Sounding End-to-End Singing Voice Synthesis</h2>
+      <h5 style="font-weight: normal;"><em>Taewoo Kim, Choongsang Cho, Young Han Lee</em></h5>
+      <h5 style="font-weight: normal;">Korea Electronics Technology Institute, South Korea</h5>
+      <!-- <h6 style="font-weight: normal;">Seongnam, South Korea</h6> -->
+      </div>
+      </br>
+
+      <h3>Abstract</h3>
+      <hr>
+
+      <p>
+        In this paper, we present Period Singer, a novel end-to-end singing voice synthesis (SVS) model that utilizes variational inference for periodic and aperiodic components, aimed at producing natural-sounding waveforms.
+Recent end-to-end SVS models have demonstrated the capability of synthesizing high-fidelity singing voices.
+However, owing to deterministic pitch conditioning, they do not fully address the one-to-many problem.
+To address this problem, we present the Period Singer architecture, which integrates variational autoencoders for the periodic and aperiodic components.
+Additionally, our methodology eliminates the dependency on an external aligner by estimating the phoneme alignment through a monotonic alignment search within note boundaries.
+Our empirical evaluations show that Period Singer outperforms existing end-to-end SVS models on Mandarin and Korean datasets.
+The efficacy of the proposed method was further corroborated by ablation studies.
+      </p>
+      <p>This page is for <b>research demonstration purposes</b> only.</p>
+
+      <!-- <p><a href="article.html">arxiv (published June 15th, 2020)</a></p> -->
+      <br>
+      <br>
+
+      <h3>Model Overview</h3>
+      <hr>
+      <div style="display: flex;">
+        <figure style="margin-right: 10px; text-align: center;">
+          <img src="./img/Fig1.jpg" height="400" width="1100">
+          <figcaption>Fig 1. Overall architecture of Period Singer</figcaption>
+        </figure>
+        </div>
+
+      <br>
+      <br>
+
+      <h3>Mandarin Chinese Singing Voice Samples</h3>
+      <hr>
+      <!-- <br>  -->
+
+      <table>
+        <em style="font-size: 18px;">Sample 1: 雨淋湿了天空灰得更讲究</em> <em style="font-size: 15px;"> (Yǔ lín shīle tiānkōng huī dé gèng jiǎngjiù)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;"><audio controls="controls"><source src="sample/mandarin/gt/2044001628.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/vits/2044001628.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger/2044001628.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger2/2044001628.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger_dpp/2044001628.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger/2044001628.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 2: 这最后的出口在爱过了才有</em> <em style="font-size: 15px;"> (Zhè zuìhòu de chūkǒu zài àiguòle cái yǒu)</em>
+        <tr>
+            <td style="text-align: center;">Ground Truth</td>
+            <td style="text-align: center;">VITS</td>
+            <td style="text-align: center;">VISinger</td>
+            <td style="text-align: center;">VISinger2</td>
+            <td style="text-align: center;">PeriodSinger(DPP)</td>
+            <td style="text-align: center;">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/gt/2044001635.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/vits/2044001635.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger/2044001635.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger2/2044001635.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger_dpp/2044001635.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger/2044001635.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 3: 这首歌给你快乐你有没有爱上我</em> <em style="font-size: 15px;"> (Zhè shǒu gē gěi nǐ kuàilè nǐ yǒu méiyǒu ài shàng wǒ)</em>
+        <tr>
+            <td style="text-align: center;">Ground Truth</td>
+            <td style="text-align: center;">VITS</td>
+            <td style="text-align: center;">VISinger</td>
+            <td style="text-align: center;">VISinger2</td>
+            <td style="text-align: center;">PeriodSinger(DPP)</td>
+            <td style="text-align: center;">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/gt/2086003178.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/vits/2086003178.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger/2086003178.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger2/2086003178.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger_dpp/2086003178.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger/2086003178.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 4: 青春有太多未知的猜测成长的烦恼算什么</em> <em style="font-size: 15px;"> (Qīngchūn yǒu tài duō wèizhī de cāicè chéngzhǎng de fánnǎo suàn shénme)</em>
+        <tr>
+            <td style="text-align: center;">Ground Truth</td>
+            <td style="text-align: center;">VITS</td>
+            <td style="text-align: center;">VISinger</td>
+            <td style="text-align: center;">VISinger2</td>
+            <td style="text-align: center;">PeriodSinger(DPP)</td>
+            <td style="text-align: center;">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/gt/2086003213.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/vits/2086003213.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger/2086003213.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger2/2086003213.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger_dpp/2086003213.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger/2086003213.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 5: 像有着心事的一张表情</em> <em style="font-size: 15px;"> (Xiàng yǒuzhe xīnshì de yī zhāng biǎoqíng)</em>
+        <tr>
+            <td style="text-align: center;">Ground Truth</td>
+            <td style="text-align: center;">VITS</td>
+            <td style="text-align: center;">VISinger</td>
+            <td style="text-align: center;">VISinger2</td>
+            <td style="text-align: center;">PeriodSinger(DPP)</td>
+            <td style="text-align: center;">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/gt/2092003413.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/vits/2092003413.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger/2092003413.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger2/2092003413.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger_dpp/2092003413.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger/2092003413.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 6: 始终年轻</em> <em style="font-size: 15px;"> (Shǐzhōng niánqīng)</em>
+        <tr>
+            <td style="text-align: center;">Ground Truth</td>
+            <td style="text-align: center;">VITS</td>
+            <td style="text-align: center;">VISinger</td>
+            <td style="text-align: center;">VISinger2</td>
+            <td style="text-align: center;">PeriodSinger(DPP)</td>
+            <td style="text-align: center;">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/gt/2092003420.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/vits/2092003420.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger/2092003420.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger2/2092003420.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger_dpp/2092003420.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger/2092003420.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 7: 小酒窝长睫毛是你最美的记号</em> <em style="font-size: 15px;"> (Xiǎo jiǔwō zhǎng jiémáo shì nǐ zuìměi de jìhào)</em>
+        <tr>
+            <td style="text-align: center;">Ground Truth</td>
+            <td style="text-align: center;">VITS</td>
+            <td style="text-align: center;">VISinger</td>
+            <td style="text-align: center;">VISinger2</td>
+            <td style="text-align: center;">PeriodSinger(DPP)</td>
+            <td style="text-align: center;">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/gt/2093003457.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/vits/2093003457.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger/2093003457.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger2/2093003457.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger_dpp/2093003457.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger/2093003457.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 8: 终于找到心有灵犀的美好</em> <em style="font-size: 15px;"> (Zhōngyú zhǎodào xīnyǒulíngxī dì měihǎo)</em>
+        <tr>
+            <td style="text-align: center;">Ground Truth</td>
+            <td style="text-align: center;">VITS</td>
+            <td style="text-align: center;">VISinger</td>
+            <td style="text-align: center;">VISinger2</td>
+            <td style="text-align: center;">PeriodSinger(DPP)</td>
+            <td style="text-align: center;">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/gt/2093003463.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/vits/2093003463.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger/2093003463.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger2/2093003463.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger_dpp/2093003463.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger/2093003463.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 9: 醒来灿烂星光透过了窗台</em> <em style="font-size: 15px;"> (Xǐng lái cànlàn xīngguāng tòuguòle chuāngtái)</em>
+        <tr>
+            <td style="text-align: center;">Ground Truth</td>
+            <td style="text-align: center;">VITS</td>
+            <td style="text-align: center;">VISinger</td>
+            <td style="text-align: center;">VISinger2</td>
+            <td style="text-align: center;">PeriodSinger(DPP)</td>
+            <td style="text-align: center;">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/gt/2100003713.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/vits/2100003713.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger/2100003713.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger2/2100003713.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger_dpp/2100003713.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger/2100003713.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 10: 相信我破晓会跨山海准时到来</em> <em style="font-size: 15px;"> (Xiāngxìn wǒ pòxiǎo huì kuà shānhǎi zhǔnshí dàolái)</em>
+        <tr>
+            <td style="text-align: center;">Ground Truth</td>
+            <td style="text-align: center;">VITS</td>
+            <td style="text-align: center;">VISinger</td>
+            <td style="text-align: center;">VISinger2</td>
+            <td style="text-align: center;">PeriodSinger(DPP)</td>
+            <td style="text-align: center;">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/gt/2100003732.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/vits/2100003732.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger/2100003732.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/visinger2/2100003732.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger_dpp/2100003732.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/mandarin/periodsinger/2100003732.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <br>
+      <br>
+
+      <h3>Korean Singing Voice Samples</h3>
+      <hr>
+      <!-- <br>  -->
+
+      <table>
+        <em style="font-size: 18px;">Sample 1: 이제 이별 뒷면에 서있는 우리</em> <em style="font-size: 15px;"> (ije ibyeol dwismyeon-e seoissneun uli)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/gt/0027_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/vits/0027_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger/0027_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger2/0027_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger_dpp/0027_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger/0027_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 2: 우리 같이 나눈 시간 그 한 순간도 의미 없는 날은 없었고</em> <em style="font-size: 15px;"> (uli gat-i nanun sigan geu han sungando uimi eobsneun nal-eun eobs-eossgo)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/gt/0027_0022.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/vits/0027_0022.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger/0027_0022.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger2/0027_0022.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger_dpp/0027_0022.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger/0027_0022.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 3: 너는 내가 사랑하니까 더 소중하니까</em> <em style="font-size: 15px;"> (neoneun naega salanghanikka deo sojunghanikka)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/gt/0057_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/vits/0057_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger/0057_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger2/0057_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger_dpp/0057_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger/0057_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 4: 그저 내 곁에만 있어줘 떠나지 말아줘</em> <em style="font-size: 15px;"> (geujeo nae gyeot-eman iss-eojwo tteonaji mal-ajwo)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/gt/0057_0019.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/vits/0057_0019.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger/0057_0019.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger2/0057_0019.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger_dpp/0057_0019.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger/0057_0019.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 5: 내 주머니 속에 넣고 니 손가락 만지작대며</em> <em style="font-size: 15px;"> (nae jumeoni sog-e neohgo ni songalag manjijagdaemyeo)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/gt/0059_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/vits/0059_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger/0059_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger2/0059_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger_dpp/0059_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger/0059_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 6: 그럼 우린 다시 사랑스럽게</em> <em style="font-size: 15px;"> (geuleom ulin dasi salangseuleobge)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/gt/0059_0017.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/vits/0059_0017.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger/0059_0017.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger2/0059_0017.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger_dpp/0059_0017.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger/0059_0017.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 7: 사계절이 와 그리고 또 떠나</em> <em style="font-size: 15px;"> (sagyejeol-i wa geuligo tto tteona)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/gt/0070_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/vits/0070_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger/0070_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger2/0070_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger_dpp/0070_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger/0070_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 8: I gave you the world 너만이 전부라</em> <em style="font-size: 15px;"> (I gave you the world neoman-i jeonbula)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/gt/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/vits/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger2/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger_dpp/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 9: 바보 같은 사랑도 괜찮아요 이렇게 그댈</em> <em style="font-size: 15px;"> (babo gat-eun salangdo gwaenchanh-ayo ileohge geudael)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/gt/0102_0013.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/vits/0102_0013.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger/0102_0013.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger2/0102_0013.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger_dpp/0102_0013.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger/0102_0013.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 10: 내가 그대라면 좋을텐데 그 아픔도 다 가져갈텐데 눈물이 말해</em> <em style="font-size: 14px;"> (naega geudaelamyeon joh-eultende geu apeumdo da gajyeogaltende nunmul-i malhae)</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">VITS</td>
+            <td style="text-align: center">VISinger</td>
+            <td style="text-align: center">VISinger2</td>
+            <td style="text-align: center">PeriodSinger(DPP)</td>
+            <td style="text-align: center">PeriodSinger</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/gt/0102_0025.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/vits/0102_0025.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger/0102_0025.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/visinger2/0102_0025.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger_dpp/0102_0025.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="sample/korean/periodsinger/0102_0025.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <br>
+      <br>
+
+      <h3>Ablation Samples</h3>
+      <hr>
+      <table>
+        <em style="font-size: 18px;">Sample 1: 완전히 돌아갈 수는 없는 걸</em> <em style="font-size: 15px;"> (wanjeonhi dol-agal suneun eobsneun geol)</em>
+        <tr>
+            <td style="text-align: center">PeriodSinger</td>
+            <td style="text-align: center">w/o NF</td>
+            <td style="text-align: center">w/o Note Boundary</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/periodsinger/0027_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/without_normalizing_flow/0027_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/mas_without_note/0027_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 2: 이제 마지막 장을 넘겨야겠어</em> <em style="font-size: 15px;"> (ije majimag jang-eul neomgyeoyagess-eo)</em>
+        <tr>
+            <td style="text-align: center">PeriodSinger</td>
+            <td style="text-align: center">w/o NF</td>
+            <td style="text-align: center">w/o Note Boundary</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/periodsinger/0027_0011.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/without_normalizing_flow/0027_0011.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/mas_without_note/0027_0011.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 3: I gave you the world 너만이 전부라</em> <em style="font-size: 15px;"> (I gave you the world neoman-i jeonbula)</em>
+        <tr>
+            <td style="text-align: center">PeriodSinger</td>
+            <td style="text-align: center">w/o NF</td>
+            <td style="text-align: center">w/o Note Boundary</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/periodsinger/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/without_normalizing_flow/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/mas_without_note/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 4: 나를 기억하나요 나를 알아보나요</em> <em style="font-size: 15px;"> (naleul gieoghanayo naleul al-abonayo)</em>
+        <tr>
+            <td style="text-align: center">PeriodSinger</td>
+            <td style="text-align: center">w/o NF</td>
+            <td style="text-align: center">w/o Note Boundary</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/periodsinger/0102_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/without_normalizing_flow/0102_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/mas_without_note/0102_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 5: 사랑해 그대 부르고 또 불러 봐도</em> <em style="font-size: 15px;"> (salanghae geudae buleugo tto bulleo bwado)</em>
+        <tr>
+            <td style="text-align: center">PeriodSinger</td>
+            <td style="text-align: center">w/o NF</td>
+            <td style="text-align: center">w/o Note Boundary</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/periodsinger/0102_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/without_normalizing_flow/0102_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="sample/ablation/mas_without_note/0102_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+
+    </div>
+  </body>
+</html>
