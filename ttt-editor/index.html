@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Instance-Specific Test-Time Training for Speech Editing in the Wild</title>
+    <style>
+      table {
+            margin-bottom: 30px; /* 테이블 사이 간격을 20px로 설정 */
+            width: 100%;
+            border-collapse: collapse;
+      }
+      td {
+          text-align: center;
+          border: 1px solid gray; /* 셀 외곽선 */
+          padding: 1px;
+          color: #555555;
+          font-size: 14px;
+      }
+      audio {
+          width: 150px;
+          height: 30px;
+          display: block;
+          margin: 0 auto;
+          background-color: #F0F0F0;
+          /* background-color: white; */
+      }
+      </style>
+  </head>
+  <body>
+
+    <div class="container">
+      <div style="text-align: center;">
+      <br>
+      <h2>Instance-Specific Test-Time Training for Speech Editing in the Wild</h2>
+      <h5 style="font-weight: normal;"><em>Taewoo Kim<sup>1</sup>, Uijong Lee<sup>1</sup>, Hayoung Park<sup>1</sup>, Choongsang Cho<sup>1</sup>, Nam In Park<sup>2</sup>, Young Han Lee<sup>1</sup></em></h5>
+      <h5 style="font-weight: normal;"><sup>1</sup>Korea Electronics Technology Institute, South Korea</h5>
+      <h5 style="font-weight: normal;"><sup>2</sup>National Forensic Service, South Korea</h5>
+      <!-- <h6 style="font-weight: normal;">Seongnam, South Korea</h6> -->
+      </div>
+      </br>
+
+      <h3>Abstract</h3>
+      <hr>
+
+      <p>
+        Speech editing systems aim to naturally modify speech content while preserving acoustic consistency and speaker identity. However, previous studies often struggle to adapt to unseen and diverse acoustic conditions, resulting in degraded editing performance in real-world scenarios. To address this, we propose an instance-specific test-time training method for speech editing in the wild. Our approach employs direct supervision from ground-truth acoustic features in unedited regions, and indirect supervision in edited regions via auxiliary losses based on duration constraints and phoneme prediction. This strategy mitigates the bandwidth discontinuity problem in speech editing, ensuring smooth acoustic transitions between unedited and edited regions. Additionally, it enables precise control over speech rate by adapting the model to target durations via mask length adjustment during test-time training. Experiments on in-the-wild benchmark datasets demonstrate that our method outperforms existing speech editing systems in both objective and subjective evaluations. 
+      </p>
+      <p>This page is for <b>research demonstration purposes</b> only.</p>
+
+      <!-- <p><a href="article.html">arxiv (published June 15th, 2020)</a></p> -->
+      <br>
+      <br>
+
+      <h3>Model Overview</h3>
+      <hr>
+      <div style="display: flex;">
+        <figure style="margin-right: 10px; text-align: center;">
+          <img src="./img/fig1.png" height="350" width="1100">
+          <figcaption>Fig 1. Overview of Proposed Speech Editing System</figcaption>
+        </figure>
+        </div>
+
+      <br>
+      <br>
+
+      <h3>Speech Editing Samples (Training on LibriTTS Clean, Testing on GigaSpeech)</h3>
+      <hr>
+      <!-- <br>  -->
+
+      <table>
+        <em style="font-size: 18px;">Sample 1: Number seven coffee contains essential nutrients <span style="color: red;">the body loves and needs. one cup of coffee</span> contains nutrients like riboflavin potassium magnesium and others.</em>
+        <tr>
+            <td style="text-align: center">Ground Truth</td>
+            <td style="text-align: center">FluentSpeech</td>
+            <td style="text-align: center">VoiceCraft</td>
+            <td style="text-align: center">Proposed</td>
+            <td style="text-align: center">w/o TTT for SD</td>
+            <td style="text-align: center">w/o TTT for DP</td>
+            <td style="text-align: center">w/o TTT for Both</td>
+        </tr>
+        <tr>
+          <!-- <td style="text-align: center;"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/korean/gt/0027_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td> -->
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/gt/YOU1000000177_S0000019.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/fluentspeech/YOU1000000177_S0000019.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/voicecraft/YOU1000000177_S0000019.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/proposed/YOU1000000177_S0000019.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT_SD/YOU1000000177_S0000019.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT_DP/YOU1000000177_S0000019.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT/YOU1000000177_S0000019.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 2: He says while having your hand in every pot might <span style="color: red;">not be the most efficient way to run a business it did</span> mean that the changs knew what their brand was all about.</em>
+        <tr>
+          <td style="text-align: center">Ground Truth</td>
+          <td style="text-align: center">FluentSpeech</td>
+          <td style="text-align: center">VoiceCraft</td>
+          <td style="text-align: center">Proposed</td>
+          <td style="text-align: center">w/o TTT for SD</td>
+          <td style="text-align: center">w/o TTT for DP</td>
+          <td style="text-align: center">w/o TTT for Both</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/gt/POD1000000005_S0000217.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/fluentspeech/POD1000000005_S0000217.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/voicecraft/POD1000000005_S0000217.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/proposed/POD1000000005_S0000217.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT_SD/POD1000000005_S0000217.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT_DP/POD1000000005_S0000217.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT/POD1000000005_S0000217.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 3: Now  <span style="color: red;">you're using triangles</span> and squares.</em>
+        <tr>
+          <td style="text-align: center">Ground Truth</td>
+          <td style="text-align: center">FluentSpeech</td>
+          <td style="text-align: center">VoiceCraft</td>
+          <td style="text-align: center">Proposed</td>
+          <td style="text-align: center">w/o TTT for SD</td>
+          <td style="text-align: center">w/o TTT for DP</td>
+          <td style="text-align: center">w/o TTT for Both</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/gt/POD1000000011_S0000114.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/fluentspeech/POD1000000011_S0000114.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/voicecraft/POD1000000011_S0000114.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/proposed/POD1000000011_S0000114.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT_SD/POD1000000011_S0000114.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT_DP/POD1000000011_S0000114.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT/POD1000000011_S0000114.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 4: In part. One of the things that <span style="color: red;">I've I've spoken about openly is the fact that I</span> was in a ah you know a convent school.</em>
+        <tr>
+          <td style="text-align: center">Ground Truth</td>
+          <td style="text-align: center">FluentSpeech</td>
+          <td style="text-align: center">VoiceCraft</td>
+          <td style="text-align: center">Proposed</td>
+          <td style="text-align: center">w/o TTT for SD</td>
+          <td style="text-align: center">w/o TTT for DP</td>
+          <td style="text-align: center">w/o TTT for Both</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/gt/POD1000000013_S0000026.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/fluentspeech/POD1000000013_S0000026.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/voicecraft/POD1000000013_S0000026.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/proposed/POD1000000013_S0000026.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT_SD/POD1000000013_S0000026.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT_DP/POD1000000013_S0000026.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT/POD1000000013_S0000026.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 5: Open the box. Place <span style="color: red;">the sensors. plug it in. And your</span> home is protected around the clock.</em>
+        <tr>
+          <td style="text-align: center">Ground Truth</td>
+          <td style="text-align: center">FluentSpeech</td>
+          <td style="text-align: center">VoiceCraft</td>
+          <td style="text-align: center">Proposed</td>
+          <td style="text-align: center">w/o TTT for SD</td>
+          <td style="text-align: center">w/o TTT for DP</td>
+          <td style="text-align: center">w/o TTT for Both</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/gt/POD1000000021_S0000144.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/fluentspeech/POD1000000021_S0000144.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/voicecraft/POD1000000021_S0000144.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/proposed/POD1000000021_S0000144.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT_SD/POD1000000021_S0000144.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT_DP/POD1000000021_S0000144.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls"><source src="https://rlataewoo.github.io/ttt-editor/sample/gigaspeech/without_TTT/POD1000000021_S0000144.wav?raw=true" type="audio/wav" />Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+
+
+      <br>
+      <br>
+
+      <h3>Ablation Samples (WIP)</h3>
+      <hr>
+      <!-- <table>
+        <em style="font-size: 18px;">Sample 1: 완전히 돌아갈 수는 없는 걸</em> <em style="font-size: 15px;"> (wanjeonhi dol-agal suneun eobsneun geol)</em>
+        <tr>
+            <td style="text-align: center">PeriodSinger</td>
+            <td style="text-align: center">w/o NF</td>
+            <td style="text-align: center">w/o Note Boundary</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/periodsinger/0027_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/without_normalizing_flow/0027_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/mas_without_note/0027_0007.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 2: 이제 마지막 장을 넘겨야겠어</em> <em style="font-size: 15px;"> (ije majimag jang-eul neomgyeoyagess-eo)</em>
+        <tr>
+            <td style="text-align: center">PeriodSinger</td>
+            <td style="text-align: center">w/o NF</td>
+            <td style="text-align: center">w/o Note Boundary</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/periodsinger/0027_0011.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/without_normalizing_flow/0027_0011.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/mas_without_note/0027_0011.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 3: I gave you the world 너만이 전부라</em> <em style="font-size: 15px;"> (I gave you the world neoman-i jeonbula)</em>
+        <tr>
+            <td style="text-align: center">PeriodSinger</td>
+            <td style="text-align: center">w/o NF</td>
+            <td style="text-align: center">w/o Note Boundary</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/periodsinger/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/without_normalizing_flow/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/mas_without_note/0070_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 4: 나를 기억하나요 나를 알아보나요</em> <em style="font-size: 15px;"> (naleul gieoghanayo naleul al-abonayo)</em>
+        <tr>
+            <td style="text-align: center">PeriodSinger</td>
+            <td style="text-align: center">w/o NF</td>
+            <td style="text-align: center">w/o Note Boundary</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/periodsinger/0102_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/without_normalizing_flow/0102_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/mas_without_note/0102_0001.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table>
+      <table>
+        <em style="font-size: 18px;">Sample 5: 사랑해 그대 부르고 또 불러 봐도</em> <em style="font-size: 15px;"> (salanghae geudae buleugo tto bulleo bwado)</em>
+        <tr>
+            <td style="text-align: center">PeriodSinger</td>
+            <td style="text-align: center">w/o NF</td>
+            <td style="text-align: center">w/o Note Boundary</td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/periodsinger/0102_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/without_normalizing_flow/0102_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+          <td style="text-align: center"><audio controls="controls" style="width: 366px;"><source src="https://rlataewoo.github.io/ttt-editor/sample/ablation/mas_without_note/0102_0009.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+        </tr>
+      </table> -->
+
+    </div>
+  </body>
+</html>
