@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TTS 음성 평가</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #1d2330; --muted: #6b7280;
+    --border: #e3e6eb; --accent: #3b5bdb; --accent-soft: #e8edff;
+    --ref: #0c8599; --ref-soft: #e3f6f8;
+    --ok: #2f9e44; --warn: #e8590c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14161b; --card: #1c1f26; --text: #e6e8ec; --muted: #9aa1ad;
+      --border: #2c313b; --accent: #7b96ff; --accent-soft: #252c44;
+      --ref: #3bc9db; --ref-soft: #1b3035;
+      --ok: #51cf66; --warn: #ff922b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 16px 140px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 16px;
+  }
+  .card h2 { font-size: 1.05rem; margin: 0 0 12px; }
+  .guide ul { margin: 0; padding-left: 20px; }
+  .guide li { margin: 2px 0; }
+  .guide h3 { font-size: .95rem; margin: 16px 0 4px; }
+  .scale { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: .93rem; }
+  .scale b { color: var(--accent); }
+
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .fields { grid-template-columns: 1fr; } }
+  label.f { display: block; font-size: .88rem; color: var(--muted); margin-bottom: 4px; }
+  input[type=text] {
+    width: 100%; padding: 10px 12px; font-size: 1rem; color: var(--text);
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  }
+  input[type=text]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .sample-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
+  .sample-id { font-weight: 600; }
+  .badge { font-size: .8rem; padding: 2px 8px; border-radius: 999px; background: var(--bg); color: var(--muted); border: 1px solid var(--border); white-space: nowrap; }
+  .badge.done { color: var(--ok); border-color: var(--ok); }
+  .transcript {
+    background: var(--accent-soft); border-radius: 8px; padding: 12px 14px;
+    font-size: 1.02rem; margin-bottom: 12px;
+  }
+  .transcript small, .audio-block small { display: block; color: var(--muted); font-size: .78rem; margin-bottom: 4px; }
+  .audio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 560px) { .audio-grid { grid-template-columns: 1fr; } }
+  .audio-block { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .audio-block.ref { background: var(--ref-soft); border-color: transparent; }
+  .audio-block.ref small { color: var(--ref); font-weight: 600; }
+  .audio-block.syn small { color: var(--accent); font-weight: 600; }
+  .audio-block .chk { float: right; font-weight: 400; color: var(--ok); }
+  audio { width: 100%; display: block; }
+
+  .q { font-size: .92rem; font-weight: 600; margin: 4px 0 6px; }
+  .q span { font-weight: 400; color: var(--muted); }
+  .rating { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 14px; }
+  .rating input { position: absolute; opacity: 0; pointer-events: none; }
+  .rating label {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 8px 4px; border: 1px solid var(--border); border-radius: 10px;
+    cursor: pointer; user-select: none; transition: background .12s, border-color .12s;
+  }
+  .rating label .n { font-size: 1.2rem; font-weight: 700; }
+  .rating label .t { font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.25; }
+  .rating label:hover { border-color: var(--accent); }
+  .rating input:checked + label { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .rating input:checked + label .t { color: #fff; }
+  .rating input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .rating.locked label { opacity: .45; cursor: not-allowed; }
+  .hint { font-size: .82rem; color: var(--warn); margin-bottom: 8px; }
+
+  .bar {
+    position: fixed; left: 0; right: 0; bottom: 0; background: var(--card);
+    border-top: 1px solid var(--border); padding: 12px 16px;
+  }
+  .bar-inner { max-width: 760px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .progress { flex: 1; min-width: 140px; }
+  .progress-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+  .progress-text { font-size: .82rem; color: var(--muted); margin-top: 4px; }
+  button {
+    font: inherit; padding: 10px 16px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--card); color: var(--text);
+  }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .msg { margin-top: 8px; font-size: .9rem; }
+  .msg.err { color: var(--warn); }
+  .msg.ok { color: var(--ok); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>TTS 음성 품질 평가</h1>
+  <p class="sub">레퍼런스 음성과 합성 음성을 듣고 합성 음성의 <b>전반적인 품질</b>을 1~5점으로 평가해 주세요.</p>
+
+  <section class="card guide">
+    <h2>평가 안내</h2>
+    <ul>
+      <li>가능하면 조용한 환경에서 이어폰이나 헤드폰을 착용해 주세요.</li>
+      <li>각 샘플마다 <b>레퍼런스 음성</b>과 <b>합성 음성</b>을 모두 끝까지 들은 뒤에 점수를 선택할 수 있습니다. 여러 번 들어도 됩니다.</li>
+      <li>레퍼런스 음성은 목표 화자의 실제 목소리이며, 합성 음성과 말하는 내용은 다를 수 있습니다.</li>
+      <li>입력한 내용은 이 브라우저에 자동 저장됩니다. 모든 평가를 마친 뒤 <b>결과 저장</b>을 눌러 파일을 제출해 주세요.</li>
+    </ul>
+
+    <h3>평가 기준: 합성 음성의 전반적인 품질</h3>
+    <p style="margin:0 0 6px;font-size:.93rem">자연스러움, 레퍼런스 화자와의 목소리 유사도, 발음 정확도 등을 모두 고려해 종합적으로 판단해 주세요.</p>
+    <div class="scale">
+      <b>5</b><span>매우 좋음: 레퍼런스 화자의 실제 녹음과 구분하기 어려움</span>
+      <b>4</b><span>좋음: 약간 아쉬운 부분이 있지만 전반적으로 우수함</span>
+      <b>3</b><span>보통: 어색하거나 화자와 다른 부분이 느껴지나 무난함</span>
+      <b>2</b><span>나쁨: 부자연스럽거나 화자와 다른 느낌이 두드러짐</span>
+      <b>1</b><span>매우 나쁨: 매우 부자연스럽거나 알아듣기 어려움</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>평가자 정보</h2>
+    <div class="fields">
+      <div>
+        <label class="f" for="tester-name">이름 *</label>
+        <input type="text" id="tester-name" placeholder="홍길동" autocomplete="name">
+      </div>
+      <div>
+        <label class="f" for="tester-aff">소속 *</label>
+        <input type="text" id="tester-aff" placeholder="OO대학교 / OO연구소" autocomplete="organization">
+      </div>
+    </div>
+  </section>
+
+  <div id="samples"></div>
+</div>
+
+<div class="bar">
+  <div class="bar-inner">
+    <div class="progress">
+      <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+      <div class="progress-text" id="ptext">0 / 0 완료</div>
+    </div>
+    <button id="reset">초기화</button>
+    <button class="primary" id="submit">결과 저장</button>
+  </div>
+  <div class="bar-inner"><div class="msg" id="msg"></div></div>
+</div>
+
+<script>
+// ===== 샘플 목록: 여기만 수정하면 됩니다 =====
+// ref:   레퍼런스(목표 화자) 음성 경로. 여러 샘플이 같은 파일을 써도 됩니다.
+// audio: 합성 음성 경로
+// text:  합성 음성의 스크립트
+const SAMPLES = [
+  { id: "sample_01", ref: "refs/ref_spk1.wav", audio: "samples/sample_01.wav", text: "안녕하세요, 서울중앙지검 수사관입니다. 고객님 명의의 계좌가 금융 범죄에 연루되어 확인차 연락드렸습니다." },
+  { id: "sample_02", ref: "refs/ref_spk2.wav", audio: "samples/sample_02.wav", text: "엄마, 나 휴대폰 액정이 깨져서 친구 폰으로 연락했어. 급하게 부탁할 게 있는데 지금 통화 괜찮아?" },
+  { id: "sample_03", ref: "refs/ref_spk3.wav", audio: "samples/sample_03.wav", text: "고객님, 저금리 대환대출 상품이 승인되셨습니다. 기존 대출 상환을 위해 안내해 드린 계좌로 입금 부탁드립니다." },
+  { id: "sample_04", ref: "refs/ref_spk4.wav", audio: "samples/sample_04.wav", text: "금융감독원입니다. 고객님 계좌에서 이상 거래가 감지되어 안전 계좌로 자금을 옮기셔야 합니다." },
+  { id: "sample_05", ref: "refs/ref_spk5.wav", audio: "samples/sample_05.wav", text: "지금 이 통화 내용은 수사상 기밀이니까 가족이나 은행 직원한테도 절대 말씀하시면 안 됩니다." },
+  { id: "sample_06", ref: "refs/ref_spk6.wav", audio: "samples/sample_06.wav", text: "택배 주소가 잘못 입력되어 배송이 지연되고 있습니다. 문자로 보내드린 링크에서 주소를 수정해 주세요." },
+  { id: "sample_07", ref: "refs/ref_spk7.wav", audio: "samples/sample_07.wav", text: "여보세요, 김 과장입니다. 내일 미팅 시간을 오후 두 시로 옮겨도 괜찮으실까요?" },
+  { id: "sample_08", ref: "refs/ref_spk8.wav", audio: "samples/sample_08.wav", text: "본인 확인 절차를 위해 주민등록번호 뒷자리와 카드 비밀번호를 말씀해 주시겠어요?" },
+  { id: "sample_09", ref: "refs/ref_spk9.wav", audio: "samples/sample_09.wav", text: "네, 안녕하세요. 지난번에 말씀하신 견적서는 오늘 중으로 메일로 보내드리겠습니다." },
+  { id: "sample_10", ref: "refs/ref_spk10.wav", audio: "samples/sample_10.wav", text: "아빠, 나 지금 접촉 사고가 나서 합의금이 급하게 필요해. 일단 이 계좌로 좀 보내줘." },
+];
+const REQUIRE_FULL_LISTEN = true;   // true면 레퍼런스와 합성 음성을 모두 끝까지 들어야 점수 선택 가능
+const METRICS = [
+  { key: "mos", title: "종합 평가", desc: "합성 음성의 전반적인 품질은?", cls: "",
+    labels: { 1: "매우 나쁨", 2: "나쁨", 3: "보통", 4: "좋음", 5: "매우 좋음" } },
+];
+const STORE_KEY = "tts_mos_eval_v3";
+
+// ===== 상태 =====
+// scores[sampleId] = { mos }, listened[sampleId] = { ref, syn }
+let state = { name: "", affiliation: "", scores: {}, listened: {}, playCount: {} };
+try {
+  const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+  if (saved) state = Object.assign(state, saved);
+} catch (e) {}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+const $ = (id) => document.getElementById(id);
+const nameEl = $("tester-name"), affEl = $("tester-aff");
+nameEl.value = state.name; affEl.value = state.affiliation;
+nameEl.addEventListener("input", () => { state.name = nameEl.value; save(); });
+affEl.addEventListener("input", () => { state.affiliation = affEl.value; save(); });
+
+function escapeHtml(t) {
+  return String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+const listened = (id) => (state.listened[id] ||= { ref: false, syn: false });
+const isUnlocked = (id) => !REQUIRE_FULL_LISTEN || (listened(id).ref && listened(id).syn);
+const isDone = (id) => METRICS.every(m => state.scores[id]?.[m.key]);
+
+// ===== 샘플 카드 렌더링 =====
+const container = $("samples");
+SAMPLES.forEach((s, i) => {
+  const card = document.createElement("section");
+  card.className = "card";
+  card.id = "card-" + s.id;
+  const unlocked = isUnlocked(s.id);
+  const L = listened(s.id);
+  card.innerHTML = `
+    <div class="sample-head">
+      <span class="sample-id">샘플 ${i + 1} / ${SAMPLES.length}</span>
+      <span class="badge" id="badge-${s.id}">미평가</span>
+    </div>
+    <div class="audio-grid">
+      <div class="audio-block ref">
+        <small>레퍼런스 음성 (목표 화자)<span class="chk" data-chk="ref">${L.ref ? "✓ 청취함" : ""}</span></small>
+        <audio controls preload="metadata" src="${escapeHtml(s.ref)}" data-kind="ref"></audio>
+      </div>
+      <div class="audio-block syn">
+        <small>합성 음성<span class="chk" data-chk="syn">${L.syn ? "✓ 청취함" : ""}</span></small>
+        <audio controls preload="metadata" src="${escapeHtml(s.audio)}" data-kind="syn"></audio>
+      </div>
+    </div>
+    <div class="transcript"><small>합성 음성 스크립트</small>${escapeHtml(s.text)}</div>
+    ${unlocked ? "" : `<div class="hint">레퍼런스와 합성 음성을 모두 끝까지 들은 후 점수를 선택할 수 있습니다.</div>`}
+    ${METRICS.map(m => `
+      <div class="q">${m.title} <span>${m.desc}</span></div>
+      <div class="rating ${m.cls} ${unlocked ? "" : "locked"}" role="radiogroup" aria-label="샘플 ${i + 1} ${m.title}">
+        ${[1,2,3,4,5].map(v => `
+          <input type="radio" name="r-${s.id}-${m.key}" id="r-${s.id}-${m.key}-${v}" value="${v}" data-metric="${m.key}"
+            ${state.scores[s.id]?.[m.key] == v ? "checked" : ""} ${unlocked ? "" : "disabled"}>
+          <label for="r-${s.id}-${m.key}-${v}"><span class="n">${v}</span><span class="t">${m.labels[v].replace("\n", "<br>")}</span></label>
+        `).join("")}
+      </div>
+    `).join("")}
+  `;
+  container.appendChild(card);
+
+  card.querySelectorAll("audio").forEach(audio => {
+    const kind = audio.dataset.kind;
+    audio.addEventListener("play", () => {
+      // 다른 음성이 재생 중이면 정지
+      document.querySelectorAll("audio").forEach(a => { if (a !== audio) a.pause(); });
+      const pc = (state.playCount[s.id] ||= { ref: 0, syn: 0 });
+      pc[kind]++; save();
+    });
+    const markListened = (label) => {
+      listened(s.id)[kind] = true; save();
+      card.querySelector(`[data-chk="${kind}"]`).textContent = label;
+      if (isUnlocked(s.id)) {
+        card.querySelectorAll(".rating").forEach(rg => rg.classList.remove("locked"));
+        card.querySelectorAll(".rating input").forEach(inp => inp.disabled = false);
+        card.querySelector(".hint")?.remove();
+      }
+    };
+    audio.addEventListener("ended", () => markListened("✓ 청취함"));
+    // 레퍼런스 파일이 아직 없으면 청취 조건에서 제외
+    if (kind === "ref") audio.addEventListener("error", () => markListened("파일 없음"));
+  });
+  card.querySelectorAll(".rating input").forEach(inp => {
+    inp.addEventListener("change", () => {
+      (state.scores[s.id] ||= {})[inp.dataset.metric] = Number(inp.value);
+      save(); refresh();
+    });
+  });
+});
+
+function refresh() {
+  let done = 0;
+  SAMPLES.forEach(s => {
+    const b = $("badge-" + s.id), sc = state.scores[s.id] || {};
+    if (isDone(s.id)) { done++; b.classList.add("done"); } else { b.classList.remove("done"); }
+    b.textContent = sc.mos ? `${sc.mos}점` : "미평가";
+  });
+  $("pfill").style.width = (done / SAMPLES.length * 100) + "%";
+  $("ptext").textContent = `${done} / ${SAMPLES.length} 완료`;
+}
+refresh();
+
+// ===== 결과 저장 =====
+function setMsg(t, cls) { const m = $("msg"); m.textContent = t; m.className = "msg " + (cls || ""); }
+
+$("submit").addEventListener("click", () => {
+  const name = state.name.trim(), aff = state.affiliation.trim();
+  if (!name || !aff) {
+    setMsg("이름과 소속을 입력해 주세요.", "err");
+    (name ? affEl : nameEl).focus(); window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  const missing = SAMPLES.filter(s => !isDone(s.id));
+  if (missing.length) {
+    setMsg(`평가하지 않은 샘플이 ${missing.length}개 있습니다.`, "err");
+    $("card-" + missing[0].id).scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  const ts = new Date();
+  const rows = [["tester_name", "affiliation", "sample_id", "reference", "audio", "transcript",
+                 "mos", "ref_play_count", "syn_play_count", "timestamp"]];
+  SAMPLES.forEach(s => {
+    const sc = state.scores[s.id], pc = state.playCount[s.id] || {};
+    rows.push([name, aff, s.id, s.ref, s.audio, s.text, sc.mos, pc.ref || 0, pc.syn || 0, ts.toISOString()]);
+  });
+  const csv = "﻿" + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\r\n");
+
+  const avg = (k) => (SAMPLES.reduce((a, s) => a + state.scores[s.id][k], 0) / SAMPLES.length).toFixed(2);
+  const stamp = ts.toISOString().slice(0, 16).replace(/[-:T]/g, "");
+  const safeName = name.replace(/[\\/:*?"<>|\s]+/g, "_");
+  download(csv, `TTS_eval_${safeName}_${stamp}.csv`, "text/csv;charset=utf-8");
+  setMsg(`저장 완료 (평균 ${avg("mos")}점). 다운로드된 CSV 파일을 담당자에게 전달해 주세요.`, "ok");
+});
+
+function download(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+$("reset").addEventListener("click", () => {
+  if (!confirm("입력한 이름, 소속, 모든 점수를 지우시겠습니까?")) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  location.reload();
+});
+</script>
+</body>
+</html>
